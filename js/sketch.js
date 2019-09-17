@@ -34,7 +34,7 @@ function init() {
   words_array = Object.keys(data);
   //console.log(words_array);
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000000);
-  camera.position.set(0, -0, 10);
+  camera.position.set(0, -0, 50);
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
