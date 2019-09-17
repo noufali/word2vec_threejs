@@ -5,11 +5,11 @@ var camera, scene, group, scenelight, renderer, controls;
 var cameraSpeed = 0;
 
 var raycaster = new THREE.Raycaster();
-var mouseVector = new THREE.Vector3();
+var mouse = new THREE.Vector2(), INTERSECTED;
 
 var group, textMesh1, textMesh2, textGeo, materials;
 
-const mapping_range = 100.;
+const mapping_range = 400.;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -34,25 +34,25 @@ function init() {
   words_array = Object.keys(data);
   //console.log(words_array);
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000000);
-  camera.position.set(0, -0, 50);
+  camera.position.set(0, -0, 150);
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
 
-  group = new THREE.Group();
-  scene.add( group );
-  //scene.fog = new THREE.Fog(0xf0f0f0, 0, 850);
+  var plane = new THREE.GridHelper(400, 50);
+  plane.position.set(0,-20,0);
+  scene.add(plane);
+  scene.fog = new THREE.Fog(0xf0f0f0, 0, 850);
 
   scenelight = new THREE.AmbientLight(0x404040);
   scene.add(scenelight);
 
-  // var geometry = new THREE.SphereGeometry( 100, 32, 32 );
   var loader = new THREE.FontLoader();
 
   loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
     for (var i = 0; i < words_array.length; i++) {
       let message = words_array[i];
-      let geo = new THREE.SphereGeometry( 1, 32, 32 );
+      let geo = new THREE.SphereGeometry( 0.5, 32, 32 );
 
       let x = (data[message][0][0]);
       let y = (data[message][0][1]);
@@ -64,15 +64,20 @@ function init() {
 
       let sphere = new THREE.Mesh( geo, material );
       let color = data[message][1];
-      var material = new THREE.MeshPhongMaterial({
-              color: color,
-              shininess: 35,
-
-              transparent: true,
-              opacity: 0.4,
-              side: THREE.DoubleSide
-          });
+      // var material = new THREE.MeshPhongMaterial({
+      //   color: color,
+      //   shininess: 35,
+      //
+      //   transparent: true,
+      //   side: THREE.DoubleSide
+      // });
+      var material = new THREE.MeshPhongMaterial( {
+        color: color,
+        specular: 0x050505,
+        shininess: 100
+      })
       sphere.position.set(mappedX,mappedY,mappedZ)
+      sphere.type = "sphere"
 
       scene.add( sphere );
 
@@ -88,40 +93,12 @@ function init() {
     }
   });
 
-
-  // var loader = new THREE.FontLoader();
-  // loader.load('fonts/helvetiker_regular.typeface.json', function(font) {
-  //
-  //     var color = 0x006699;
-  //     var matDark = new THREE.LineBasicMaterial({
-  //         color: color,
-  //         side: THREE.DoubleSide
-  //     });
-  //     var matLite = new THREE.MeshPhongMaterial({
-  //         color: color,
-  //         shininess: 35,
-  //
-  //         transparent: true,
-  //         opacity: 0.4,
-  //         side: THREE.DoubleSide
-  //     });
-  //     for (var i = 0; i < words_array.length; i++) {
-  //         var message = words_array[i];
-  //         var x = (data[message][0]);
-  //         var y = (data[message][1]);
-  //         var z = (data[message][2]);
-  //         // var z = getRandomArbitrary(0.,400)
-  //         var mappedX = Math.floor(mapping(x, -17., 18., -mapping_range, mapping_range));
-  //         var mappedY = Math.floor(mapping(y, -17., 18., -mapping_range, mapping_range));
-  //         var mappedZ = Math.floor(mapping(z, -17., 18., -mapping_range/2., mapping_range));
-  //         generateShapeFromText(message, mappedX, mappedY, mappedZ, font, matDark, matLite);
-  //     }
-  // }); //end load function
   renderer = new THREE.WebGLRenderer({});
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
   window.addEventListener('resize', onWindowResize, false);
+  document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
   controls = new THREE.OrbitControls( camera, renderer.domElement );
   controls.target.set( 0, 1, 0 );
@@ -132,49 +109,25 @@ function init() {
   animate();
 } // end init
 
-function generateShapeFromText(_word, _xpos, _ypos, _zpos, _font, mD, mL) {
-  var xMid, text;
-  var textShape = new THREE.BufferGeometry();
-  //text,size,divisions
-  var shapes = _font.generateShapes(_word, 10, 1);
-  var geometry = new THREE.ShapeGeometry(shapes);
-  geometry.computeBoundingBox();
-  // xMid = _pos - 0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
-  // geometry.translate(xMid, 0, 0);
-  geometry.translate(_xpos, _ypos, 0);
-  // make shape ( N.B. edge view not visible )
-  textShape.fromGeometry(geometry);
-  text = new THREE.Mesh(textShape, mL);
-  text.position.z = _zpos;
-  scene.add(text);
-  // make line shape ( N.B. edge view remains visible )
-  var holeShapes = [];
-  for (var i = 0; i < shapes.length; i++) {
-    var shape = shapes[i];
-    if (shape.holes && shape.holes.length > 0) {
-      for (var j = 0; j < shape.holes.length; j++) {
-        var hole = shape.holes[j];
-        holeShapes.push(hole);
-      }
-    }
-  }
-  shapes.push.apply(shapes, holeShapes);
-  var lineText = new THREE.Object3D();
-  for (var i = 0; i < shapes.length; i++) {
-    var shape = shapes[i];
-    var points = shape.getPoints();
-    var geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-    geometry.translate(_xpos, _ypos, 0);
-    var lineMesh = new THREE.Line(geometry, mD);
-    lineText.add(lineMesh);
-  }
-  // scene.add(lineText);
-}
-
-
 function animate() {
   requestAnimationFrame(animate);
+
+  // raycaster.setFromCamera( mouse, camera );
+  // var intersects = raycaster.intersectObjects( scene.children );
+  // if ( intersects.length > 0 ) {
+  //   console.log(intersects)
+  //   if ( INTERSECTED != intersects[ 0 ].object ) {
+  //     if ( INTERSECTED &&  intersects[ 0 ].object.type == "sphere")
+  //     INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+  //     INTERSECTED = intersects[ 0 ].object;
+  //     INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+  //     INTERSECTED.material.emissive.setHex( 0xff0000 );
+  //   }
+  // } else {
+  //   if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+  //   INTERSECTED = null;
+  // }
+
   render();
 }
 
@@ -216,32 +169,12 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// var selectedObject = null;
-// 		function onDocumentMouseMove( event ) {
-// 			event.preventDefault();
-// 			if ( selectedObject ) {
-// 				selectedObject.material.color.set( '#69f' );
-// 				selectedObject = null;
-// 			}
-// 			var intersects = getIntersects( event.layerX, event.layerY );
-// 			if ( intersects.length > 0 ) {
-// 				var res = intersects.filter( function ( res ) {
-// 					return res && res.object;
-// 				} )[ 0 ];
-// 				if ( res && res.object ) {
-// 					selectedObject = res.object;
-// 					selectedObject.material.color.set( '#f00' );
-// 				}
-// 			}
-// 		}
-//
-// 		function getIntersects( x, y ) {
-// 			x = ( x / window.innerWidth ) * 2 - 1;
-// 			y = - ( y / window.innerHeight ) * 2 + 1;
-// 			mouseVector.set( x, y, 0.5 );
-// 			raycaster.setFromCamera( mouseVector, camera );
-// 			return raycaster.intersectObject( group, true );
-// 		}
+function onDocumentMouseMove( event ) {
+  event.preventDefault();
+  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
 
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
