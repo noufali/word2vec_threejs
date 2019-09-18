@@ -33,22 +33,34 @@
           cursor: pointer;
         }
 
-        #keywords {
+        button[status="active"] {
           background-color: #C0382A;
         }
+
+        button[status="inactive"] {
+          background-color: #828282;
+        }
+
+        button:focus {outline:0;}
+
+
+        /* #keywords {
+          background-color: #C0382A;
+        } */
 
     </style>
     <script src="lib/three.js"></script>
     <script src="lib/OrbitControls.js"></script>
     <script src="lib/PointerLockControls.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
 <body>
 <div id="update">
   <p id="txt">word</p>
-  <button id="keywords" type="button">keywords</button>
-  <button id="interviews" type="button" disabled>interviews</button>
-  <button id="articles" type="button" disabled>articles</button>
+  <button id="keywords" state="active" type="button">keywords</button>
+  <button id="interviews" state="inactive" type="button">interviews</button>
+  <button id="articles" state="inactive" type="button">articles</button>
 </div>
 </body>
 <script src="js/sketch.js"></script>

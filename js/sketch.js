@@ -18,6 +18,7 @@ var direction = new THREE.Vector3();
 
 var data;
 var words_array;
+var toggle = "keywords";
 
 preload();
 
@@ -35,7 +36,6 @@ function preload() {
 function init() {
   words_array = Object.keys(data);
   let xyz = {}
-  //console.log(words_array);
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000000);
   camera.position.set(-5, -5, 60);
 
@@ -62,7 +62,9 @@ function init() {
 
       let sphere = new THREE.Mesh( geo, material );
       sphere.position.set(mappedX,mappedY,mappedZ)
-      sphere.text = word
+      sphere.text = word;
+      sphere.keyword = data[word].keyword;
+      sphere.data = data[word].data;
 
       scene.add( sphere );
       spheres.push( sphere );
@@ -90,8 +92,10 @@ function init() {
       let mappedZ = Math.floor(mapping(z, -17., 18., -mapping_range/2., mapping_range));
 
       let sphere = new THREE.Mesh( geo, material );
-      sphere.position.set(mappedX,mappedY,mappedZ)
-      sphere.text = word
+      sphere.position.set(mappedX,mappedY,mappedZ);
+      sphere.text = word;
+      sphere.keyword = data[word].keyword;
+      sphere.data = data[word].data;
 
       scene.add( sphere );
       spheres.push( sphere );
@@ -104,7 +108,6 @@ function init() {
   scene.add(scenelight);
 
   var axesHelper = new THREE.AxesHelper( 10 );
-  console.log(xyz["x"])
   axesHelper.position.set(xyz["x"],xyz["y"],xyz["z"]);
   scene.add( axesHelper );
 
@@ -139,6 +142,69 @@ function init() {
 
   animate();
 } // end init
+
+function bindButtons(){
+  let buttons = $('#update button');
+
+  buttons.on('click', function(e){
+    var $this = $(this);
+
+    if($this.attr('id') == 'interviews'){
+      $this.attr("status","active");
+      $(this).css('backgroundColor','#E16C63');
+
+      for(let i=0;i<spheres.length;i++) {
+        if (spheres[i].data == "interviews") {
+          spheres[i].material.color.setHex( 0xE16C63 );
+        } else {
+          spheres[i].material.color.setHex( 0x828282 );
+        }
+      }
+
+      $('#articles').attr("status","inactive");
+      $('#keywords').attr("status","inactive");
+      $('#articles').css('backgroundColor','#828282');
+      $('#keywords').css('backgroundColor','#828282');
+    }
+
+    if($this.attr('id') == 'articles') {
+      $this.attr("status","active");
+      $(this).css('backgroundColor','#EEAF8A');
+
+      for(let i=0;i<spheres.length;i++) {
+        if (spheres[i].data == "articles") {
+          spheres[i].material.color.setHex( 0xEEAF8A );
+        } else {
+          spheres[i].material.color.setHex( 0x828282 );
+        }
+      }
+
+      $('#interviews').attr("status","inactive");
+      $('#keywords').attr("status","inactive");
+      $('#interviews').css('backgroundColor','#828282');
+      $('#keywords').css('backgroundColor','#828282');
+    }
+
+    if($this.attr('id') == 'keywords') {
+      $this.attr("status","active");
+      $(this).css('backgroundColor','#C0382A');
+
+      for(let i=0;i<spheres.length;i++) {
+        if (spheres[i].keyword == true) {
+          spheres[i].material.color.setHex( 0xC0382A );
+        } else {
+          spheres[i].material.color.setHex( 0x828282 );
+        }
+      }
+
+      $('#interviews').attr("status","inactive");
+      $('#artciles').attr("status","inactive");
+      $('#interviews').css('backgroundColor','#828282');
+      $('#articles').css('backgroundColor','#828282');
+    }
+  })
+}
+bindButtons();
 
 function animate() {
   requestAnimationFrame(animate);
