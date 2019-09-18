@@ -18,6 +18,25 @@
           padding: 20px;
           font-size: 2em;
         }
+        button {
+          font-family: Monospace;
+          background-color: #828282;
+          border: none;
+          color: white;
+          padding: 10px 20px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+        }
+        button:hover {
+          cursor: pointer;
+        }
+
+        #keywords {
+          background-color: #C0382A;
+        }
+
     </style>
     <script src="lib/three.js"></script>
     <script src="lib/OrbitControls.js"></script>
@@ -27,6 +46,9 @@
 <body>
 <div id="update">
   <p id="txt">word</p>
+  <button id="keywords" type="button">keywords</button>
+  <button id="interviews" type="button" disabled>interviews</button>
+  <button id="articles" type="button" disabled>articles</button>
 </div>
 </body>
 <script src="js/sketch.js"></script>

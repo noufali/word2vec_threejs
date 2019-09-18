@@ -45,12 +45,11 @@ function init() {
   for (let i = 0; i < words_array.length; i++) {
     let word = words_array[i];
     if (data[word].keyword == true) {
-      color = 0xff69b4
+      color = 0xC0382A
       material = new THREE.MeshPhongMaterial( {
         color: color,
-        specular: 0x050505,
+        specular: 0xC0382A,
         shininess: 100,
-        opacity: 0.5
       });
       let geo = new THREE.SphereGeometry( 0.18, 32, 32 );
       let x = (data[word].vec[0]);
@@ -100,7 +99,8 @@ function init() {
   }
   scene.fog = new THREE.Fog(0xf0f0f0, 0, 850);
 
-  scenelight = new THREE.AmbientLight(0x404040);
+  //scenelight = new THREE.AmbientLight(0x404040);
+  scenelight = new THREE.AmbientLight(0xffffff);
   scene.add(scenelight);
 
   var axesHelper = new THREE.AxesHelper( 10 );
@@ -108,55 +108,21 @@ function init() {
   axesHelper.position.set(xyz["x"],xyz["y"],xyz["z"]);
   scene.add( axesHelper );
 
-  // var loader = new THREE.FontLoader();
-  //
-  // loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
-  //   for (let i = 0; i < words_array.length; i++) {
-  //     let message = words_array[i];
-  //     let material, color;
-  //
-  //     color = 0x000000
-  //     material = new THREE.MeshPhongMaterial( {
-  //       color: color,
-  //       specular: 0x050505,
-  //       shininess: 100,
-  //       opacity: 0.3,
-  //       transparent: true
-  //     });
-  //     let geo = new THREE.SphereGeometry( 0.3, 32, 32 );
-  //     let x = (data[message][0][0]);
-  //     let y = (data[message][0][1]);
-  //     let z = (data[message][0][2]);
-  //
-  //     let mappedX = Math.floor(mapping(x, -17., 18., -mapping_range, mapping_range));
-  //     let mappedY = Math.floor(mapping(y, -17., 18., -mapping_range, mapping_range));
-  //     let mappedZ = Math.floor(mapping(z, -17., 18., -mapping_range/2., mapping_range));
-  //
-  //     let sphere = new THREE.Mesh( geo, material );
-  //     sphere.position.set(mappedX,mappedY,mappedZ)
-  //     sphere.text = message
-  //
-  //     scene.add( sphere );
-  //     spheres.push( sphere );
-  //
-  //
-  //     // for (let i = 0; i < vecs.length; i++) {
-  //     //   if (message == vecs[i][0]) {
-  //     //     var shapes = font.generateShapes( message, 0.25 );
-  //     //     var geometry = new THREE.ShapeBufferGeometry( shapes );
-  //     //     geometry.computeBoundingBox();
-  //     //     xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
-  //     //     geometry.translate( xMid, 0, 0 );
-  //     //     // make shape ( N.B. edge view not visible )
-  //     //     text = new THREE.Mesh( geometry, material );
-  //     //     text.position.set(mappedX,mappedY-2,mappedZ);
-  //     //     scene.add( text );
-  //     //   } else {
-  //     //     geo = new THREE.SphereGeometry( 0.2, 32, 32 );
-  //     //   }
-  //     }
+
+  // for (let i = 0; i < vecs.length; i++) {
+  //   if (message == vecs[i][0]) {
+  //     var shapes = font.generateShapes( message, 0.25 );
+  //     var geometry = new THREE.ShapeBufferGeometry( shapes );
+  //     geometry.computeBoundingBox();
+  //     xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+  //     geometry.translate( xMid, 0, 0 );
+  //     // make shape ( N.B. edge view not visible )
+  //     text = new THREE.Mesh( geometry, material );
+  //     text.position.set(mappedX,mappedY-2,mappedZ);
+  //     scene.add( text );
+  //   } else {
+  //     geo = new THREE.SphereGeometry( 0.2, 32, 32 );
   //   }
-  // });
 
   renderer = new THREE.WebGLRenderer({});
   renderer.setPixelRatio(window.devicePixelRatio);
