@@ -6,8 +6,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <style>
+        @font-face {
+          font-family: TaubSans-Regular;
+          src: url('fonts/TaubSans-Regular.woff2') format('woff2');
+        }
         body {
-            font-family: Monospace;
+            font-family: TaubSans-Regular;
             background-color: #f0f0f0;
             margin: 0px;
             overflow: hidden;
@@ -16,10 +20,12 @@
           /* background-color: yellow; */
           position: absolute;
           padding: 20px;
+          padding-top: 0px;
           font-size: 2em;
+          width: 40%;
         }
         button {
-          font-family: Monospace;
+          font-family: TaubSans-Regular;
           background-color: #828282;
           border: none;
           color: white;
@@ -27,7 +33,9 @@
           text-align: center;
           text-decoration: none;
           display: inline-block;
-          font-size: 16px;
+          font-size: 20px;
+          margin-right:5px;
+          width: 25%;
         }
         button:hover {
           cursor: pointer;

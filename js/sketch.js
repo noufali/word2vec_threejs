@@ -74,7 +74,7 @@ function init() {
         xyz["z"] = mappedZ;
       }
     } else {
-      color = 0x000000
+      color = 0x828282
       material = new THREE.MeshPhongMaterial( {
         color: color,
         specular: 0x050505,
