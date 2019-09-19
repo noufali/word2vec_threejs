@@ -135,7 +135,14 @@ function init() {
   document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
   controls = new THREE.OrbitControls( camera, renderer.domElement );
-  controls.target.set( 0, 1, 0 );
+  //controls.target.set( 0, 1, 0 );
+  controls.target.set(xyz["x"],xyz["y"],xyz["z"]);
+  controls.enableDamping = true;
+  //controls.dampingFactor = 0.07;
+  controls.rotateSpeed = 0.4;
+  controls.zoomSpeed = 0.8;
+  controls.minDistance = 5;
+  controls.maxDistance = 20;
   controls.update();
 
   //window.addEventListener( "mousemove", onDocumentMouseMove, false );
