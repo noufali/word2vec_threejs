@@ -225,7 +225,7 @@ function animate() {
       INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
       INTERSECTED = intersects[ 0 ].object;
       INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-      INTERSECTED.material.emissive.setHex( 0xff0000 );
+      INTERSECTED.material.emissive.setHex( 0x131D4B );
       let element = document.getElementById("txt");
       element.innerHTML = INTERSECTED.text;
 
