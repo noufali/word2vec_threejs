@@ -37,7 +37,7 @@ function init() {
   words_array = Object.keys(data);
   let xyz = {}
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000000);
-  camera.position.set(-5, -5, 60);
+  camera.position.set(-7, -3, 48);
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
@@ -215,6 +215,7 @@ bindButtons();
 
 function animate() {
   requestAnimationFrame(animate);
+  //console.log(camera.position);
 
   raycaster.setFromCamera( mouse, camera );
   var intersects = raycaster.intersectObjects( spheres );
