@@ -52,9 +52,14 @@
         button:focus {outline:0;}
 
 
-        /* #keywords {
-          background-color: #C0382A;
-        } */
+        #similar-words {
+          display: flex;
+          flex-direction: column;
+          flex-wrap: nowrap;
+          font-size: 16px;
+          line-height: 0px;
+          margin-top: 30px;
+        }
 
     </style>
     <script src="lib/three.js"></script>
@@ -66,9 +71,17 @@
 <body>
 <div id="update">
   <p id="txt">word</p>
-  <button id="keywords" state="active" type="button">keywords</button>
+  <button id="keywords" state="inactive" type="button">keywords</button>
   <button id="interviews" state="inactive" type="button">interviews</button>
   <button id="articles" state="inactive" type="button">articles</button>
+  <div id="similar-words">
+    <!-- <p style="font-size:18px">similar words:</p> -->
+    <p id="s1">word1</p>
+    <p id="s2">word2</p>
+    <p id="s3">word3</p>
+    <p id="s4">word4</p>
+    <p id="s5">word5</p>
+  </div>
 </div>
 </body>
 <script src="js/sketch.js"></script>

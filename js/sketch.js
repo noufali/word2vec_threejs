@@ -1,5 +1,5 @@
 
-const path_to_file = "vectors/data_3d_vector_result3.json";
+const path_to_file = "vectors/new_vecs.json";
 
 var camera, scene, group, scenelight, renderer, controls;
 var cameraSpeed = 0;
@@ -10,14 +10,14 @@ var spheres = [];
 
 var group, textMesh1, textMesh2, textGeo, materials;
 
-const mapping_range = 200.;
+const mapping_range = 10.;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
 var direction = new THREE.Vector3();
 
 var data;
-var words_array;
+var words_array = [];
 var toggle = "keywords";
 
 preload();
@@ -34,81 +34,84 @@ function preload() {
 }
 
 function init() {
-  words_array = Object.keys(data);
+  //words_array = Object.keys(data);
   let xyz = {}
-  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(-5, 1, 51);
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000000);
+  camera.position.set(-90,79,147);
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
 
-  for (let i = 0; i < words_array.length; i++) {
-    let word = words_array[i];
-    if (data[word].keyword == true) {
-      color = 0xC0382A
-      material = new THREE.MeshPhongMaterial( {
-        color: color,
-        specular: 0xC0382A,
-        shininess: 100,
-      });
-      let geo = new THREE.SphereGeometry( 0.18, 32, 32 );
-      let x = (data[word].vec[0]);
-      let y = (data[word].vec[1]);
-      let z = (data[word].vec[2]);
+  for (let i = 0; i < data.length; i++) {
+    let word = data[i].keyword;
+    color = 0xC0382A
+    material = new THREE.MeshPhongMaterial( {
+      color: color,
+      specular: 0xC0382A,
+      shininess: 100,
+    });
+    let geo = new THREE.SphereGeometry( 5, 32, 32 );
+    let x = (data[i].vec[0]);
+    let y = (data[i].vec[1]);
+    let z = (data[i].vec[2]);
 
-      let mappedX = Math.floor(mapping(x, -17., 18., -mapping_range, mapping_range));
-      let mappedY = Math.floor(mapping(y, -17., 18., -mapping_range, mapping_range));
-      let mappedZ = Math.floor(mapping(z, -17., 18., -mapping_range/2., mapping_range));
+    let mappedX = Math.floor(mapping(x, -17., 18., -mapping_range, mapping_range));
+    let mappedY = Math.floor(mapping(y, -17., 18., -mapping_range, mapping_range));
+    let mappedZ = Math.floor(mapping(z, -17., 18., -mapping_range/2., mapping_range));
 
-      let sphere = new THREE.Mesh( geo, material );
-      sphere.position.set(mappedX,mappedY,mappedZ)
-      sphere.text = word;
-      sphere.keyword = data[word].keyword;
-      sphere.data = data[word].data;
+    let sphere = new THREE.Mesh( geo, material );
+    sphere.position.set(x,y,z)
+    sphere.text = word;
+    sphere.keyword = true;
+    sphere.data = data[i].data;
+    sphere.similarity = data[i].similarity;
 
-      scene.add( sphere );
-      spheres.push( sphere );
-      if (word = "global cash card") {
-        xyz["x"] = mappedX;
-        xyz["y"] = mappedY;
-        xyz["z"] = mappedZ;
-      }
-    } else {
-      color = 0x828282
-      material = new THREE.MeshPhongMaterial( {
-        color: color,
+    scene.add( sphere );
+    spheres.push( sphere );
+    if (word = "global cash card") {
+      xyz["x"] = mappedX;
+      xyz["y"] = mappedY;
+      xyz["z"] = mappedZ;
+    }
+    let sims = data[i].similarity;
+    for (let s = 0; s < sims.length; s++ ) {
+      let word2 = sims[s].word;
+      let c2 = 0x828282
+      material2 = new THREE.MeshPhongMaterial( {
+        color: c2,
         specular: 0x050505,
         shininess: 100,
         opacity: 0.3,
         transparent: true
       });
-      let geo = new THREE.SphereGeometry( 0.09, 32, 32 );
-      let x = (data[word].vec[0]);
-      let y = (data[word].vec[1]);
-      let z = (data[word].vec[2]);
+      let geo2 = new THREE.SphereGeometry( 2, 32, 32 );
+      let x2 = (sims[s].vec[0]);
+      let y2 = (sims[s].vec[1]);
+      let z2 = (sims[s].vec[2]);
 
-      let mappedX = Math.floor(mapping(x, -17., 18., -mapping_range, mapping_range));
-      let mappedY = Math.floor(mapping(y, -17., 18., -mapping_range, mapping_range));
-      let mappedZ = Math.floor(mapping(z, -17., 18., -mapping_range/2., mapping_range));
+      let mappedX2 = Math.floor(mapping(x2, -17., 18., -mapping_range, mapping_range));
+      let mappedY2 = Math.floor(mapping(y2, -17., 18., -mapping_range, mapping_range));
+      let mappedZ2 = Math.floor(mapping(z2, -17., 18., -mapping_range/2., mapping_range));
 
-      let sphere = new THREE.Mesh( geo, material );
-      sphere.position.set(mappedX,mappedY,mappedZ);
-      sphere.text = word;
-      sphere.keyword = data[word].keyword;
-      sphere.data = data[word].data;
+      let sphere2 = new THREE.Mesh( geo2, material2 );
+      sphere2.position.set(x2,y2,z2);
+      sphere2.text = word2;
+      sphere2.keyword = false;
+      sphere2.data = data[i].data;
 
-      scene.add( sphere );
-      spheres.push( sphere );
+      scene.add( sphere2 );
+      spheres.push( sphere2 );
     }
   }
+
   scene.fog = new THREE.Fog(0xf0f0f0, 0, 850);
 
   //scenelight = new THREE.AmbientLight(0x404040);
   scenelight = new THREE.AmbientLight(0xffffff);
   scene.add(scenelight);
 
-  var axesHelper = new THREE.AxesHelper( 10 );
-  axesHelper.position.set(xyz["x"],xyz["y"],xyz["z"]);
+  var axesHelper = new THREE.AxesHelper( 40 );
+  axesHelper.position.set(0,0,0);
   scene.add( axesHelper );
 
 
@@ -135,14 +138,14 @@ function init() {
   document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
   controls = new THREE.OrbitControls( camera, renderer.domElement );
-  //controls.target.set( 0, 1, 0 );
-  controls.target.set(xyz["x"],xyz["y"],xyz["z"]);
+  controls.target.set( 0, 1, 0 );
+  //controls.target.set(xyz["x"],xyz["y"],xyz["z"]);
   controls.enableDamping = true;
-  //controls.dampingFactor = 0.07;
+  controls.dampingFactor = 0.07;
   controls.rotateSpeed = 0.4;
   controls.zoomSpeed = 0.8;
-  controls.minDistance = 5;
-  controls.maxDistance = 20;
+  controls.minDistance = 10;
+  controls.maxDistance = 400;
   controls.update();
 
   //window.addEventListener( "mousemove", onDocumentMouseMove, false );
@@ -215,23 +218,36 @@ bindButtons();
 
 function animate() {
   requestAnimationFrame(animate);
-  console.log(camera.position);
+  //console.log(camera.position);
 
   raycaster.setFromCamera( mouse, camera );
-  var intersects = raycaster.intersectObjects( spheres );
+  var intersects = raycaster.intersectObjects( spheres, true );
   if ( intersects.length > 0 ) {
     if ( INTERSECTED != intersects[ 0 ].object ) {
       if ( INTERSECTED)
-      INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+      //INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+      INTERSECTED.material.color.setHex( INTERSECTED.colourHex );
       INTERSECTED = intersects[ 0 ].object;
       INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-      INTERSECTED.material.emissive.setHex( 0x131D4B );
+      INTERSECTED.colourHex = INTERSECTED.material.color.getHex();
+      //INTERSECTED.material.emissive.setHex( 0x131D4B );
+      INTERSECTED.material.color.setHex( 0x131D4B );
       let element = document.getElementById("txt");
       element.innerHTML = INTERSECTED.text;
 
+      if (INTERSECTED.keyword == true){
+        for (let s = 1; s < 6; s++) {
+          let key = INTERSECTED.similarity;
+          let similar = document.getElementById("s" + s);
+          similar.innerHTML = key[s].word + ", " + key[s].cosine.toFixed(4);
+        }
+      }
+
     }
   } else {
-    if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+    //if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+    if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.colourHex );
+
     INTERSECTED = null;
   }
 
