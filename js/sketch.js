@@ -242,11 +242,17 @@ function animate() {
           similar.innerHTML = key[s].word + ", " + key[s].cosine.toFixed(4);
         }
       }
-
+      if (INTERSECTED.keyword == false){
+        for (let s = 1; s < 6; s++) {
+          let similar = document.getElementById("s" + s);
+          similar.innerHTML = " "
+        }
+      }
     }
   } else {
     //if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
     if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.colourHex );
+
 
     INTERSECTED = null;
   }
